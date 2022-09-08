@@ -1,4 +1,4 @@
-import pygeoboundaries as gbd
+import geoboundaries as gbd
 import geojson
 
 def test_validate_adm():
