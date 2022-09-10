@@ -2,30 +2,16 @@
 
 from typing import List
 import geojson
-import requests
-#from osgeo import gdal
+import json
+import urllib3
 import countries_iso_dict
 import iso_codes
-from requests_cache import CachedSession
 
-_session = CachedSession(expire_after=604800) #cache expires after 1 week
-
-def clear_cache():
-    _session.cache.clear()
-
-def set_cache_expire_time(seconds: int):
-    """Update cache expiring time. Does not clear cache."""
-    global _session
-    _session = CachedSession(expire_after=seconds)
-
-def disable_cache():
-    global _session
-    _session = requests
+_http = urllib3.PoolManager()
 
 def _is_valid_adm(iso3, adm: str) -> bool :
-    html = _session.get("https://www.geoboundaries.org/api/current/gbOpen/{}/".format(iso3), verify=True).text
-    #print('adm in html =' + str(adm in html))
-    return adm in html
+    resp = _http.request('GET', "https://www.geoboundaries.org/api/current/gbOpen/{}/".format(iso3)).data.decode('utf-8') #returns a html file
+    return adm in resp
 
 def _validate_adm(adm: str | int) -> str :
     if type(adm).__name__ == 'int' or len(str(adm)) == 1:
@@ -71,17 +57,19 @@ def get_metadata(territory: str, adm: str | int) -> dict:
     Returns a json of specifided territory's metadata.
     Use adm='ALL' to get metadata for every ADM levels.
     """
-    return _session.get(_generate_url(territory, adm), verify=True).json() #TO DO get rid of verify arg
+    return json.loads(_http.request('GET', _generate_url(territory, adm)).data.decode('utf-8'))
+    #return _session.get(_generate_url(territory, adm), verify=True).json()
 
 def _get_data(territory: str, adm: str, simplified: bool) -> dict:
-    """Requests the geoboundaries API and returns a JSON str object of the specified territory and ADM """
+    """Requests the geoboundaries API and returns a JSON dict of the specified territory and ADM """
     geom_complexity = 'simplifiedGeometryGeoJSON' if simplified else 'gjDownloadURL'
     try:
         json_uri = get_metadata(territory, adm)[geom_complexity]
     except:
         print("Error while requesting geoboudaries API\n URL : {}\n".format(_generate_url(territory, adm)))
         raise
-    return _session.get(json_uri).text
+    return json.loads(_http.request('GET', json_uri).data.decode('utf-8'))
+    #return _session.get(json_uri).text
 
 def get_adm(territories: str | List[str], adm: str | int, simplified=True) -> dict:
     """
@@ -109,7 +97,15 @@ def get_adm(territories: str | List[str], adm: str | int, simplified=True) -> di
     """
             
     if type(territories) == str:
-        return geojson.loads(_get_data(territories, adm, simplified))
-    geojsons = [geojson.loads(_get_data(i, adm, simplified))['features'][0] for i in territories]
-    feature_collection = geojson.FeatureCollection(geojsons)
+        return _get_data(territories, adm, simplified)
+    features_list = []
+    for i in territories:
+        features = _get_data(i, adm, simplified)['features']
+        for j in features:
+            features_list.append(j)
+    feature_collection = {
+        'type': 'FeatureCollection',
+        'features': features_list
+    }
+    #feature_collection = geojson.FeatureCollection(features_list)
     return feature_collection

@@ -1,4 +1,4 @@
-import geoboundaries as gbd
+import pygeoboundaries as gbd
 import geojson
 
 def test_validate_adm():
@@ -57,5 +57,5 @@ def test_get_adm():
     assert type(gbd.get_adm('Vanuatu',-1)) == geojson.feature.FeatureCollection
 
 
-# test_get_iso3_from_name()
+test_get_iso3_from_name()
 test_validate_adm()
