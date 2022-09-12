@@ -15,11 +15,27 @@ from pygeoboundaries import get_adm
 sen = get_adm(territory='Senegal', adm='ADM0')
 ```
 
-You can pass a list into the ```territory``` argument to retreive multiple countries' data
+You can pass a list into ```territory``` to retreive multiple countries' data
 
 ```python
 mli_sen = get_adm(['Senegal', 'Mali'], adm='ADM0')
 ```
+
+You can then use ```geopandas``` to create a GeoDataFrame with the geojson you just got.
+
+```python
+import geopandas as gpd
+gdf = gpd.GeoDataFrame.from_features(mli_sen)
+```
+
+Or plot it directly with ```folium``` or any other mapping tool.
+
+```python
+m = folium.Map(location=[15.3610,-5.5178], zoom_start=6)
+folium.GeoJson(mli_sen).add_to(m)
+```
+
+![Senegal and Mali's ADM1 boundaries](https://i.ibb.co/hmyY5V6/mali-sen.png)
 
 Allowed values for ```territory```: 
 * ISO 3166-1 ([alpha3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)) : AFG, QAT, YEM, etc.
@@ -37,14 +53,3 @@ Allowed values for ```adm```:
 * int 0 to 5
 * int -1 (returns the smallest available ADM level)
 For more information about ADM levels, check out https://www.geoboundaries.org/index.html
-
-<!-- You can then use ```geopandas``` to create a GeoDataFrame with the geojson you just got.
-
-```python
-import geopandas as gpd
-#TO DO : gpd stuff and plotting
-```
- -->
-
-
-
