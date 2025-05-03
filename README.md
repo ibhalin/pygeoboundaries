@@ -7,7 +7,7 @@ To do
 
 ## Access administrative boundaries
 
-Here's a basic example which shows you how to get Senegal boudaries in a geojson file.
+Here's a basic example which shows you how to get Senegal boundaries in a geojson file.
 
 ```python
 from pygeoboundaries import get_adm
