@@ -1,15 +1,18 @@
-import geoboundaries as gbd
+from pygeoboundaries_geolab.pygeoboundaries import _validate_adm, _get_iso3_from_name_or_iso2, get_adm, get_gdf
 import geojson
+import pytest
+import geopandas as gpd
+from shapely.geometry import Point
 
 def test_validate_adm():
-    assert gbd._validate_adm(1) == 'ADM1'
-    assert gbd._validate_adm(5) == 'ADM5'
-    assert gbd._validate_adm('2') == 'ADM2'
-    assert gbd._validate_adm('3') == 'ADM3'
-    assert gbd._validate_adm('all') == 'ALL'
-    assert gbd._validate_adm('adm1') == 'ADM1'
-    assert gbd._validate_adm('ADM2') == 'ADM2'
-    assert gbd._validate_adm('aDm3') == 'ADM3'
+    assert _validate_adm(1) == 'ADM1'
+    assert _validate_adm(5) == 'ADM5'
+    assert _validate_adm('2') == 'ADM2'
+    assert _validate_adm('3') == 'ADM3'
+    assert _validate_adm('all') == 'ALL'
+    assert _validate_adm('adm1') == 'ADM1'
+    assert _validate_adm('ADM2') == 'ADM2'
+    assert _validate_adm('aDm3') == 'ADM3'
 
 def test_get_iso3_from_name():
     countries = {
@@ -46,16 +49,12 @@ def test_get_iso3_from_name():
         'Шрі-Ланка': 'Sri Lanka'
     }
     for k,v in countries.items():
-        print(gbd._get_iso3_from_name_or_iso2(k))
-        assert len(gbd._get_iso3_from_name_or_iso2(k)) == 3
+        print(_get_iso3_from_name_or_iso2(k))
+        assert len(_get_iso3_from_name_or_iso2(k)) == 3
 
 def test_get_adm():
-    assert type(gbd.get_adm('sn','ADM0')) == geojson.feature.FeatureCollection
-    assert type(gbd.get_adm('Senegal','ADM0')) == geojson.feature.FeatureCollection
+    assert type(get_adm('sn','ADM0')) == geojson.feature.FeatureCollection
+    assert type(get_adm('Senegal','ADM0')) == geojson.feature.FeatureCollection
     for i in range(6):
-        assert type(gbd.get_adm('France',i)) == geojson.feature.FeatureCollection
-    assert type(gbd.get_adm('Vanuatu',-1)) == geojson.feature.FeatureCollection
-
-
-# test_get_iso3_from_name()
-test_validate_adm()
+        assert type(get_adm('France',i)) == geojson.feature.FeatureCollection
+    assert type(get_adm('Vanuatu',-1)) == geojson.feature.FeatureCollection
