@@ -1,6 +1,6 @@
 """Runfola, Daniel, Community Contributors, and [v4.0: Lindsey Rogers, Joshua Habib, Sidonie Horn, Sean Murphy, Dorian Miller, Hadley Day, Lydia Troup, Dominic Fornatora, Natalie Spage, Kristina Pupkiewicz, Michael Roth, Carolina Rivera, Charlie Altman, Isabel Schruer, Tara McLaughlin, Russ Biddle, Renee Ritchey, Emily Topness, James Turner, Sam Updike, Helena Buckman, Neel Simpson, Jason Lin], [v2.0: Austin Anderson, Heather Baier, Matt Crittenden, Elizabeth Dowker, Sydney Fuhrig, Seth Goodman, Grace Grimsley, Rachel Layko, Graham Melville, Maddy Mulder, Rachel Oberman, Joshua Panganiban, Andrew Peck, Leigh Seitz, Sylvia Shea, Hannah Slevin, Rebecca Yougerman, Lauren Hobbs]. "geoBoundaries: A global database of political administrative boundaries." Plos one 15, no. 4 (2020): e0231866."""
 
-from typing import List, Optional
+from typing import List, Optional, Union
 import geojson
 import requests
 from . import countries_iso_dict
@@ -28,7 +28,7 @@ def _is_valid_adm(iso3, adm: str) -> bool :
     #print('adm in html =' + str(adm in html))
     return adm in html
 
-def _validate_adm(adm: str | int) -> str :
+def _validate_adm(adm: Union[str, int]) -> str :
     if type(adm).__name__ == 'int' or len(str(adm)) == 1:
         adm = 'ADM' + str(adm)
     if str.upper(adm) in ['ADM{}'.format(str(i)) for i in range(6)] or str.upper(adm) == 'ALL':
@@ -58,7 +58,7 @@ def _get_iso3_from_name_or_iso2(name: str) -> str:
         print("KeyError : Couldn't find country named {}".format(e))
         raise KeyError
 
-def _generate_url(territory: str, adm : str | int) -> str :
+def _generate_url(territory: str, adm: Union[str, int]) -> str :
     iso3 = str.upper(territory) if _is_valid_iso3_code(territory) else _get_iso3_from_name_or_iso2(territory)
     if adm != -1:
         adm = _validate_adm(adm)
@@ -69,7 +69,7 @@ def _generate_url(territory: str, adm : str | int) -> str :
         raise KeyError
     return "https://www.geoboundaries.org/api/current/gbOpen/{}/{}/".format(iso3, adm)
 
-def get_metadata(territory: str, adm: str | int) -> dict:
+def get_metadata(territory: str, adm: Union[str, int]) -> dict:
     """
     Returns a json of specifided territory's metadata.
     Use territory='ALL' to get metadata for all territories.
@@ -88,8 +88,8 @@ def _get_data(territory: str, adm: str, simplified: bool) -> dict:
         raise
     return _session.get(json_uri).text
 
-def get_adm(territories: str | List[str], 
-            adm: str | int, 
+def get_adm(territories: Union[str, List[str]], 
+            adm: Union[str, int], 
             simplified: bool = True) -> dict:
     """
     Returns a json of specifided territories at specifided adm levels.
@@ -184,8 +184,8 @@ def _correct_metadata(territory, metadata, metadata_fields):
 
     return metadata
 
-def get_gdf(territories: str | List[str], 
-            metadata_fields: Optional[str | List[str]] = None, 
+def get_gdf(territories: Union[str, List[str]], 
+            metadata_fields: Optional[Union[str, List[str]]] = None, 
             apply_metadata_corrections: bool = True,
             simplified: bool = True) -> gpd.geodataframe.GeoDataFrame:
     '''
