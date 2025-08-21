@@ -136,7 +136,23 @@ def _correct_properties(gjson: geojson.feature.Feature) -> geojson.feature.Featu
 
     # Bangladesh
     if territory == 'BGD':
-        gjson.properties['shapeName'] = 'Bangladesh'
+        gjson.properties['shapeName'] = "Bangladesh"
+
+    # Bolivia
+    if territory == 'BOL':
+        gjson.properties['shapeName'] = "Plurinational State of Bolivia"
+
+    # Italy
+    if territory == "ITA":
+        gjson.properties['shapeName'] = "Italy" # https://github.com/wmgeolab/geoBoundaries/issues/4133
+
+    # Laos
+    if territory == 'LAO':
+        gjson.properties['shapeName'] = "Lao People's Democratic Republic"
+
+    # Nepal
+    if territory == 'NPL':
+        gjson.properties['shapeName'] = "Nepal"
 
     return gjson
 
