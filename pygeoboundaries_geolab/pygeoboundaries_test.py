@@ -58,3 +58,6 @@ def test_get_adm():
     for i in range(6):
         assert type(get_adm('France',i)) == geojson.feature.FeatureCollection
     assert type(get_adm('Vanuatu',-1)) == geojson.feature.FeatureCollection
+    assert type(get_adm('ind', 'ADM0')) == geojson.feature.FeatureCollection
+    all_obj = get_adm('ALL', 'ADM0')
+    assert 'India' in [o.properties['shapeName'] for o in all_obj.features]

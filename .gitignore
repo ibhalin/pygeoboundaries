@@ -5,6 +5,8 @@
 *.sqlite-journal
 */*.sqlite
 secrets.txt
+dist/
+dist/*
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

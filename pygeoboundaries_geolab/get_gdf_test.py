@@ -61,18 +61,18 @@ def test_country_name_conversion():
 def test_all_no_md():
     gdf = get_gdf('ALL')
     assert len(gdf.columns) == 6
-    assert len(gdf) == 230 # current num of territories as of April 2025
+    assert len(gdf) == 231 # current num of territories as of July 2025
 
 def test_all_one_md():
     gdf = get_gdf('ALL', 'Continent')
     assert len(gdf.columns) == 7
-    assert len(gdf) == 230 # current num of territories as of April 2025
+    assert len(gdf) == 231 # current num of territories as of July 2025
     assert len(gdf[gdf.Continent == 'Undefined']) == 0
 
 def test_all_multiple_md():
     gdf = get_gdf('ALL', ['worldBankIncomeGroup', 'UNSDG-subregion'])
     assert len(gdf.columns) == 8
-    assert len(gdf) == 230 # current num of territories as of April 2025
+    assert len(gdf) == 231 # current num of territories as of July 2025
     assert len(gdf[gdf['UNSDG-subregion'] == 'Undefined']) == 0
     assert set(gdf.worldBankIncomeGroup) == set(['High-income Countries', 
                                                  'Low-income Countries',

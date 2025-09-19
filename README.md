@@ -3,7 +3,7 @@ A Python client for the [geoboundaries API](https://www.geoboundaries.org/api.ht
 
 ## Installation
 
-`pip install git+https://github.com/N-Masi/pygeoboundaries.git`
+`pip install pygeoboundaries-geolab`
 
 ## Access administrative boundaries
 
@@ -71,7 +71,9 @@ This will return the following geopandas GeoDataFrame `gdf` with geometry and re
 2  MULTIPOLYGON (((5.63304 -1.40378, 5.63046 -1.4...                Equatorial Guinea      GNQ  36962785B17032204434992        GNQ      ADM0   Middle Africa    Africa
 ```
 
-You can access any of the following metadata fields for each country:
+'shapeGroup' is better to use than 'shapeISO', as all entries/countries will have a 'shapeGroup' but not necessarily 'shapeISO'.
+
+You can request any of the following metadata fields for each country:
 - 'boundaryID'
 - 'boundaryName'
 - 'boundaryISO'
